@@ -1,20 +1,20 @@
 {
   "format": 1,
   "restore": {
-    "D:\\RiderProjects\\FlexForm-Backend\\FlexForm-Backend\\FlexForm-Backend.csproj": {}
+    "D:\\flexform-back\\FlexForm-Backend\\FlexForm-Backend\\FlexForm-Backend.csproj": {}
   },
   "projects": {
-    "D:\\RiderProjects\\FlexForm-Backend\\FlexForm-Backend\\FlexForm-Backend.csproj": {
+    "D:\\flexform-back\\FlexForm-Backend\\FlexForm-Backend\\FlexForm-Backend.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "D:\\RiderProjects\\FlexForm-Backend\\FlexForm-Backend\\FlexForm-Backend.csproj",
+        "projectUniqueName": "D:\\flexform-back\\FlexForm-Backend\\FlexForm-Backend\\FlexForm-Backend.csproj",
         "projectName": "FlexForm-Backend",
-        "projectPath": "D:\\RiderProjects\\FlexForm-Backend\\FlexForm-Backend\\FlexForm-Backend.csproj",
-        "packagesPath": "C:\\Users\\Windows 10\\.nuget\\packages\\",
-        "outputPath": "D:\\RiderProjects\\FlexForm-Backend\\FlexForm-Backend\\obj\\",
+        "projectPath": "D:\\flexform-back\\FlexForm-Backend\\FlexForm-Backend\\FlexForm-Backend.csproj",
+        "packagesPath": "C:\\Users\\lenovo\\.nuget\\packages\\",
+        "outputPath": "D:\\flexform-back\\FlexForm-Backend\\FlexForm-Backend\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
-          "C:\\Users\\Windows 10\\AppData\\Roaming\\NuGet\\NuGet.Config"
+          "C:\\Users\\lenovo\\AppData\\Roaming\\NuGet\\NuGet.Config"
         ],
         "originalTargetFrameworks": [
           "net6.0"
@@ -38,6 +38,18 @@
         "net6.0": {
           "targetAlias": "net6.0",
           "dependencies": {
+            "Microsoft.AspNet.WebApi": {
+              "target": "Package",
+              "version": "[5.2.7, )"
+            },
+            "Microsoft.EntityFrameworkCore": {
+              "target": "Package",
+              "version": "[6.0.2, )"
+            },
+            "Npgsql.EntityFrameworkCore.PostgreSQL": {
+              "target": "Package",
+              "version": "[6.0.3, )"
+            },
             "Swashbuckle.AspNetCore": {
               "target": "Package",
               "version": "[6.2.3, )"
