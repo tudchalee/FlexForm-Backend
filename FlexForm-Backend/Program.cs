@@ -1,4 +1,5 @@
-using FlexForm_Backend.Controllers;
+global using FlexForm_Backend.Services;
+global using Microsoft.EntityFrameworkCore;
 using FlexForm_Backend.Helper;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -6,10 +7,11 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 
 builder.Services.AddControllers();
+builder.Services.AddDbContext<DataContext>();
+builder.Services.AddScoped<IUserService, UserServices>();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
-builder.Services.AddDbContext<DataContext>();
 
 var app = builder.Build();
 
