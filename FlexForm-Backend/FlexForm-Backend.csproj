@@ -9,7 +9,35 @@
     </PropertyGroup>
 
     <ItemGroup>
+        <PackageReference Include="AutoMapper" Version="11.0.1" />
+        <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="11.0.0" />
+        <PackageReference Include="BCrypt.Net" Version="0.1.0" />
+        <PackageReference Include="Microsoft.AspNet.WebApi" Version="5.2.7" />
+        <PackageReference Include="Microsoft.EntityFrameworkCore" Version="6.0.2" />
+        <PackageReference Include="Microsoft.IdentityModel.Tokens" Version="6.15.1" />
+        <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="6.0.3" />
         <PackageReference Include="Swashbuckle.AspNetCore" Version="6.2.3" />
+        <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="6.15.1" />
+    </ItemGroup>
+
+    <ItemGroup>
+
+    </ItemGroup>
+
+    <ItemGroup>
+      <Folder Include="Authorization" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <EmbeddedResource Remove="Helper\Entities\**" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <None Remove="Helper\Entities\**" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Content Remove="Helper\Entities\**" />
     </ItemGroup>
 
 </Project>
