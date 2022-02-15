@@ -1,8 +1,8 @@
 ﻿namespace FlexForm_Backend.Models;
 [Keyless]
-public class User
+public class AllUser
 {
-    public string? employee_id { get; set; }
+    public Guid? employee_id { get; set; }
     public string? title { get; set; }
     public string? first_name { get; set; }
     public string? last_name { get; set; }

@@ -1,20 +1,20 @@
 {
   "format": 1,
   "restore": {
-    "D:\\flexform-back\\FlexForm-Backend\\FlexForm-Backend\\FlexForm-Backend.csproj": {}
+    "D:\\RiderProjects\\FlexForm-Backend\\FlexForm-Backend\\FlexForm-Backend.csproj": {}
   },
   "projects": {
-    "D:\\flexform-back\\FlexForm-Backend\\FlexForm-Backend\\FlexForm-Backend.csproj": {
+    "D:\\RiderProjects\\FlexForm-Backend\\FlexForm-Backend\\FlexForm-Backend.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "D:\\flexform-back\\FlexForm-Backend\\FlexForm-Backend\\FlexForm-Backend.csproj",
+        "projectUniqueName": "D:\\RiderProjects\\FlexForm-Backend\\FlexForm-Backend\\FlexForm-Backend.csproj",
         "projectName": "FlexForm-Backend",
-        "projectPath": "D:\\flexform-back\\FlexForm-Backend\\FlexForm-Backend\\FlexForm-Backend.csproj",
-        "packagesPath": "C:\\Users\\lenovo\\.nuget\\packages\\",
-        "outputPath": "D:\\flexform-back\\FlexForm-Backend\\FlexForm-Backend\\obj\\",
+        "projectPath": "D:\\RiderProjects\\FlexForm-Backend\\FlexForm-Backend\\FlexForm-Backend.csproj",
+        "packagesPath": "C:\\Users\\Windows 10\\.nuget\\packages\\",
+        "outputPath": "D:\\RiderProjects\\FlexForm-Backend\\FlexForm-Backend\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
-          "C:\\Users\\lenovo\\AppData\\Roaming\\NuGet\\NuGet.Config"
+          "C:\\Users\\Windows 10\\AppData\\Roaming\\NuGet\\NuGet.Config"
         ],
         "originalTargetFrameworks": [
           "net6.0"
@@ -42,6 +42,10 @@
               "target": "Package",
               "version": "[11.0.1, )"
             },
+            "AutoMapper.Extensions.Microsoft.DependencyInjection": {
+              "target": "Package",
+              "version": "[11.0.0, )"
+            },
             "BCrypt.Net": {
               "target": "Package",
               "version": "[0.1.0, )"
@@ -54,6 +58,10 @@
               "target": "Package",
               "version": "[6.0.2, )"
             },
+            "Microsoft.IdentityModel.Tokens": {
+              "target": "Package",
+              "version": "[6.15.1, )"
+            },
             "Npgsql.EntityFrameworkCore.PostgreSQL": {
               "target": "Package",
               "version": "[6.0.3, )"
@@ -61,6 +69,10 @@
             "Swashbuckle.AspNetCore": {
               "target": "Package",
               "version": "[6.2.3, )"
+            },
+            "System.IdentityModel.Tokens.Jwt": {
+              "target": "Package",
+              "version": "[6.15.1, )"
             }
           },
           "imports": [
