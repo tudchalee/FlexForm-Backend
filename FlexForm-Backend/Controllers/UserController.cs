@@ -1,11 +1,11 @@
-﻿using FlexForm_Backend.Services;
+﻿using FlexForm_Backend.Models;
+using FlexForm_Backend.Services;
 using Microsoft.AspNetCore.Mvc;
 using AutoMapper;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 using FlexForm_Backend.Authorization;
 using FlexForm_Backend.Helper;
-using FlexForm_Backend.Models;
+
 
 namespace FlexForm_Backend.Controllers;
 
@@ -14,11 +14,13 @@ namespace FlexForm_Backend.Controllers;
 public class UserController : ControllerBase
 {
     private IUserService _userService;
+    private IMapper _mapper;
 
     public UserController(
-        IUserService userService)
+        IUserService userService,IMapper _mapper)
     {
         _userService = userService;
+        _mapper = this._mapper;
     }
     [HttpGet]
     public IActionResult GetAll()
@@ -34,13 +36,6 @@ public class UserController : ControllerBase
         return Ok(response);
     }
     
-    [HttpPost("register")]
-    public IActionResult Register(RegisterRequest model)
-    {
-        _userService.Register(model);
-        return Ok(new { message = "Registration successful" });
-    }
-    
     [HttpGet("{id}")]
     public IActionResult GetById(string id)
     {
@@ -53,5 +48,12 @@ public class UserController : ControllerBase
     {
         _userService.Delete(id);
         return Ok(new { message = "User deleted successfully" });
+    }
+    
+    [HttpPost("register")]
+    public IActionResult Register(RegisterRequest model)
+    {
+        _userService.Register(model);
+        return Ok(new {message = "Registration Successful"});
     }
 }

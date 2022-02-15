@@ -21,6 +21,23 @@
     </ItemGroup>
 
     <ItemGroup>
-      <Compile Remove="Models\AllUser.cs" />
+
     </ItemGroup>
+
+    <ItemGroup>
+      <Folder Include="Authorization" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <EmbeddedResource Remove="Helper\Entities\**" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <None Remove="Helper\Entities\**" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Content Remove="Helper\Entities\**" />
+    </ItemGroup>
+
 </Project>

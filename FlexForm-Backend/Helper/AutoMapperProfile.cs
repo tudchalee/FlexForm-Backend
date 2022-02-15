@@ -9,13 +9,13 @@ public class AutoMapperProfile : Profile
     public AutoMapperProfile()
     {
         // User -> AuthenticateResponse
-        CreateMap<Users, AuthenticateResponse>();
+        CreateMap<User, AuthenticateResponse>();
 
         // RegisterRequest -> User
-        CreateMap<RegisterRequest, Users>();
+        CreateMap<RegisterRequest, User>();
 
         // UpdateRequest -> User
-        CreateMap<UpdateRequest, Users>()
+        CreateMap<UpdateRequest, User>()
             .ForAllMembers(x => x.Condition(
                 (src, dest, prop) =>
                 {

@@ -10,8 +10,8 @@ using AutoMapper;
 public interface IUserService
 {
     AuthenticateResponse Authenticate(AuthenticateRequest model);
-    IEnumerable<Users> GetAll();
-    Users GetById(string id);
+    IEnumerable<User> GetAll();
+    User GetById(string id);
     void Register(RegisterRequest model);
     void Delete(string id);
 }
@@ -46,22 +46,6 @@ public class UserService : IUserService
         response.Token = _jwtUtils.GenerateToken(user);
         return response;
     }
-    public void Register(RegisterRequest model)
-    {
-        // validate
-        if (_context.user.Any(x => x.username == model.username))
-            throw new AppException("Username '" + model.username + "' is already taken");
-
-        // map model to new user object
-        var user = _mapper.Map<Users>(model);
-
-        // hash password
-        user.PasswordHash = BCrypt.HashPassword(model.password);
-
-        // save user
-        _context.user.Add(user);
-        _context.SaveChanges();
-    }
     
     public void Delete(string id)
     {
@@ -70,20 +54,35 @@ public class UserService : IUserService
         _context.SaveChanges();
     }
     
-    public IEnumerable<Users> GetAll()
+    public IEnumerable<User> GetAll()
     {
         return _context.user;
     }
 
-    public Users GetById(string id)
+    public User GetById(string id)
+     {
+         var user = _context.user.Find(id);
+         Console.WriteLine(user);
+         if (user == null) throw new KeyNotFoundException("User not Found");
+         return user;
+     }
+
+    public void Register(RegisterRequest model)
     {
-        return GetUser(id);
-    }
-    
-    private Users GetUser(string id)
-    {
-        var user = _context.user.Find(id);
-        if (user == null) throw new KeyNotFoundException("User not found");
-        return user;
+        // Generate employeeid
+        Guid generateId = Guid.NewGuid();
+        Console.WriteLine(generateId);
+        // string employee_id == model.employee_id;
+        if (_context.user.Any(x => x.username == model.username))
+            throw new ApplicationException("'Username '" + model.username + "'is already taken");
+        
+        var passwordHash = BCrypt.HashPassword(model.password);
+        model.password = passwordHash;
+        
+        var user = _mapper.Map<User>(model);
+        user.employee_id = generateId;
+        
+        _context.user.Add(user);
+        _context.SaveChanges();
     }
 }

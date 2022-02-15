@@ -2,7 +2,6 @@
 
 using FlexForm_Backend.Entities;
 using Microsoft.EntityFrameworkCore;
-
 public class DataContext : DbContext
 {
     protected readonly IConfiguration Configuration;
@@ -18,5 +17,5 @@ public class DataContext : DbContext
         options.UseNpgsql("Host=localhost;Database=flexform;Username=postgres;Password=FreyaFlexForm_2564");
     }
 
-    public DbSet <Users> user { get; set; }
+    public DbSet <User> user { get; set; }
 }
