@@ -21,7 +21,4 @@ public class User
     public string role_id { get; set; }
     public bool activated { get; set; }
     public string profile_pic { get; set; }
-    
-    //[JsonIgnore]
-    public string PasswordHash { get; set; }
 }

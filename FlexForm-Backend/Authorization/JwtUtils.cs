@@ -11,7 +11,7 @@ using FlexForm_Backend.Entities;
 using FlexForm_Backend.Helper; 
 public interface IJwtUtils 
 { 
-    public string GenerateToken(Users user); 
+    public string GenerateToken(User user); 
     public int? ValidateToken(string token);
 }
 
@@ -24,7 +24,7 @@ public class JwtUtils : IJwtUtils
         _appSettings = appSettings.Value; 
     }
     
-    public string GenerateToken(Users user) 
+    public string GenerateToken(User user) 
     { 
         // return user.employee_id.ToString();
         // generate token that is valid for 7 days

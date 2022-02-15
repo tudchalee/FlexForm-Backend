@@ -16,14 +16,14 @@ public interface IUserService
     void Delete(string id);
 }
 
-public class UserService : IUserService
+public class UserServices : IUserService
 {
     private DataContext _context;
     private IJwtUtils _jwtUtils;
     private readonly IMapper _mapper;
     private IUserService _userServiceImplementation;
 
-    public UserService(
+    public UserServices(
         DataContext context,
         IJwtUtils jwtUtils,
         IMapper mapper)
@@ -38,7 +38,7 @@ public class UserService : IUserService
         var user = _context.user.SingleOrDefault(x => x.username == model.Username);
 
         // validate
-        if (user == null || !BCrypt.Verify(model.Password, user.PasswordHash))
+        if (user == null || !BCrypt.Verify(model.Password, user.password))
             throw new AppException("Username or password is incorrect");
 
         // authentication successful
@@ -49,7 +49,7 @@ public class UserService : IUserService
     
     public void Delete(string id)
     {
-        var user = GetUser(id);
+        var user = GetById(id);
         _context.user.Remove(user);
         _context.SaveChanges();
     }
