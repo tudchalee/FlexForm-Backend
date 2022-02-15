@@ -1,10 +1,11 @@
 {
   "version": 2,
-  "dgSpecHash": "e9M80glCBfQ3zd3gsrws5o8mHdAZ3jE/9AsFMUhhYSuLu4HvgOVRA8bMZa516fxipaM5ASB6LF3v3aGWacV+IA==",
+  "dgSpecHash": "aS8Soiq8k7pw379hyVcsGsMLNW7umSB0CUDWiLdLBx5NU2YJwapqtSlYBFzXkM1Sn1lIe03EAUVyFZDeBzkB3Q==",
   "success": true,
   "projectFilePath": "D:\\flexform-back\\FlexForm-Backend\\FlexForm-Backend\\FlexForm-Backend.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\lenovo\\.nuget\\packages\\automapper\\11.0.1\\automapper.11.0.1.nupkg.sha512",
+    "C:\\Users\\lenovo\\.nuget\\packages\\automapper.extensions.microsoft.dependencyinjection\\11.0.0\\automapper.extensions.microsoft.dependencyinjection.11.0.0.nupkg.sha512",
     "C:\\Users\\lenovo\\.nuget\\packages\\bcrypt.net\\0.1.0\\bcrypt.net.0.1.0.nupkg.sha512",
     "C:\\Users\\lenovo\\.nuget\\packages\\microsoft.aspnet.webapi\\5.2.7\\microsoft.aspnet.webapi.5.2.7.nupkg.sha512",
     "C:\\Users\\lenovo\\.nuget\\packages\\microsoft.aspnet.webapi.client\\5.2.7\\microsoft.aspnet.webapi.client.5.2.7.nupkg.sha512",

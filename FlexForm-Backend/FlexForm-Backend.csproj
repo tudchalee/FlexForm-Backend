@@ -10,6 +10,7 @@
 
     <ItemGroup>
         <PackageReference Include="AutoMapper" Version="11.0.1" />
+        <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="11.0.0" />
         <PackageReference Include="BCrypt.Net" Version="0.1.0" />
         <PackageReference Include="Microsoft.AspNet.WebApi" Version="5.2.7" />
         <PackageReference Include="Microsoft.EntityFrameworkCore" Version="6.0.2" />
@@ -18,8 +19,7 @@
     </ItemGroup>
 
     <ItemGroup>
-      <Compile Remove="Controllers\Helper.cs" />
-      <Compile Remove="Entities\**" />
+
     </ItemGroup>
 
     <ItemGroup>
@@ -27,15 +27,15 @@
     </ItemGroup>
 
     <ItemGroup>
-      <EmbeddedResource Remove="Entities\**" />
+      <EmbeddedResource Remove="Helper\Entities\**" />
     </ItemGroup>
 
     <ItemGroup>
-      <None Remove="Entities\**" />
+      <None Remove="Helper\Entities\**" />
     </ItemGroup>
 
     <ItemGroup>
-      <Content Remove="Entities\**" />
+      <Content Remove="Helper\Entities\**" />
     </ItemGroup>
 
 </Project>

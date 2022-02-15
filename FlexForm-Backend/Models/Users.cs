@@ -1,11 +1,10 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.Text.Json.Serialization;
 
-namespace FlexForm_Backend.Entities;
-
-public class User
+namespace FlexForm_Backend.Models;
+public class Users
 {
-   //set primary key 
+    //[Key] //set primary key 
     public Guid employee_id { get; set; }
     public string title { get; set; }
     public string first_name { get; set; }
@@ -21,7 +20,5 @@ public class User
     public string role_id { get; set; }
     public bool activated { get; set; }
     public string profile_pic { get; set; }
-    
-    //[JsonIgnore]
     public string PasswordHash { get; set; }
 }
