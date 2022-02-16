@@ -14,6 +14,7 @@ public interface IUserService
     User GetById(string id);
     void Register(RegisterRequest model);
     void Delete(string id);
+    void Update(string id, UpdateRequest model);
 }
 
 public class UserServices : IUserService
@@ -35,10 +36,10 @@ public class UserServices : IUserService
     
     public AuthenticateResponse Authenticate(AuthenticateRequest model)
     {
-        var user = _context.user.SingleOrDefault(x => x.username == model.Username);
+        var user = _context.user.SingleOrDefault(x => x.username == model.username);
 
         // validate
-        if (user == null || !BCrypt.Verify(model.Password, user.password))
+        if (user == null || !BCrypt.Verify(model.password, user.password))
             throw new AppException("Username or password is incorrect");
 
         // authentication successful
@@ -62,7 +63,6 @@ public class UserServices : IUserService
     public User GetById(string id)
      {
          var user = _context.user.Find(id);
-         Console.WriteLine(user);
          if (user == null) throw new KeyNotFoundException("User not Found");
          return user;
      }
@@ -83,6 +83,27 @@ public class UserServices : IUserService
         user.employee_id = generateId;
         
         _context.user.Add(user);
+        _context.SaveChanges();
+    }
+
+    public void Update(string id, UpdateRequest model)
+    {
+        var user = GetById(id);
+
+        // validate
+        if (model.username != user.username && _context.user.Any(x => x.username == model.username))
+            throw new AppException("Username '" + model.username + "' is already taken");
+
+        // hash password if it was entered
+        if (!string.IsNullOrEmpty(model.password))
+        {
+            var passwordHash = BCrypt.HashPassword(model.password);
+            model.password = passwordHash;
+        }
+
+    // copy model to user and save
+        _mapper.Map(model, user);
+        _context.user.Update(user);
         _context.SaveChanges();
     }
 }

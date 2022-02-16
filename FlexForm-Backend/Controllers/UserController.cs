@@ -56,4 +56,11 @@ public class UserController : ControllerBase
         _userService.Register(model);
         return Ok(new {message = "Registration Successful"});
     }
+    
+    [HttpPut("{id}")]
+    public IActionResult Update(string id, UpdateRequest model)
+    {
+        _userService.Update(id, model);
+        return Ok(new { message = "User updated successfully" });
+    }
 }
