@@ -17,6 +17,17 @@ builder.Services.AddAutoMapper(typeof(Program));
 builder.Services.AddScoped<IJwtUtils,JwtUtils>();
 // configure strongly typed settings object
 builder.Services.Configure<AppSettings>(builder.Configuration.GetSection("AppSettings"));
+
+builder.Services.AddCors(options =>
+{
+    options.AddDefaultPolicy(
+        corsPolicyBuilder =>
+        {
+            corsPolicyBuilder.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod();
+        });
+});
+
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -32,22 +43,6 @@ app.UseAuthorization();
 
 app.MapControllers();
 
-app.Run();
-
-{
-    // global cors policy
-    app.UseCors(x => x
-        .AllowAnyOrigin()
-        .AllowAnyMethod()
-        .AllowAnyHeader());
-
-    // global error handler
-    app.UseMiddleware<ErrorHandlerMiddleware>();
-
-    // custom jwt auth middleware
-    app.UseMiddleware<JwtMiddleware>();
-
-    app.MapControllers();
-}
+app.UseCors();
 
 app.Run("http://localhost:4000");
