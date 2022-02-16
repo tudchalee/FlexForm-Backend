@@ -29,7 +29,7 @@ public class UserController : ControllerBase
         return Ok(users);
     }
     
-    [HttpPost("authenticate")]
+    [HttpPost("Authenticate")]
     public IActionResult Authenticate(AuthenticateRequest model)
     {
         var response = _userService.Authenticate(model);
@@ -50,7 +50,7 @@ public class UserController : ControllerBase
         return Ok(new { message = "User deleted successfully" });
     }
     
-    [HttpPost("register")]
+    [HttpPost("Register")]
     public IActionResult Register(RegisterRequest model)
     {
         _userService.Register(model);
