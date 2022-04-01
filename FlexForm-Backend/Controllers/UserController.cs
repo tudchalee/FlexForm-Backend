@@ -63,4 +63,13 @@ public class UserController : ControllerBase
         _userService.Update(id, model);
         return Ok(new { message = "User updated successfully" });
     }
+    
+    [HttpGet("EditUser{id}")]
+    public IActionResult ShowEditUser(string id)
+    {
+        var user = _userService.ShowEditUser(id);
+        return Ok(user);
+    }
+    
+
 }
