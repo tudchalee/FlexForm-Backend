@@ -21,4 +21,5 @@ public class User
     public string role_id { get; set; }
     public bool activated { get; set; }
     public string profile_pic { get; set; }
+    public string nt_id { get; set; }
 }
