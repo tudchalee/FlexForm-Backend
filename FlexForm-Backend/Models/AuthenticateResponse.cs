@@ -6,5 +6,5 @@ public class AuthenticateResponse
     public string last_name { get; set; }
     public string username { get; set; }
     public string Token { get; set; }
-    public string role_id { get; set; }
+    public string role_id { get; set; } 
 }
