@@ -41,7 +41,7 @@ public class UserServices : IUserService
         // validate
         if (user == null || !BCrypt.Verify(model.password, user.password))
             throw new AppException("Username or password is incorrect");
-
+        
         // authentication successful
         var response = _mapper.Map<AuthenticateResponse>(user);
         response.Token = _jwtUtils.GenerateToken(user);
@@ -101,7 +101,12 @@ public class UserServices : IUserService
             model.password = passwordHash;
         }
 
-    // copy model to user and save
+        if (user.username != null)
+        {
+            user.email = model.email;
+        }
+
+        // copy model to user and save
         _mapper.Map(model, user);
         _context.user.Update(user);
         _context.SaveChanges();
