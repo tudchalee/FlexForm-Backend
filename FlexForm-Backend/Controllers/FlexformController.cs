@@ -35,7 +35,7 @@ public class FlexformController: ControllerBase
     }
     
     // POST api/<FlexformController>/5
-    [HttpPost]
+    [HttpPost("CreateForm")]
     public ActionResult<FormStructure> Post([FromBody] FormStructure form)
     {
         var savedForm = flexformService.Create(form);
