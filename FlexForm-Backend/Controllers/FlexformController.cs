@@ -14,7 +14,7 @@ public class FlexformController: ControllerBase
     }
     
     // GET: api/<FlexformController>
-    [HttpGet]
+    [HttpGet("AllForm")]
     public ActionResult<List<FormStructure>> GetAll()
     {
         return flexformService.GetAll();
