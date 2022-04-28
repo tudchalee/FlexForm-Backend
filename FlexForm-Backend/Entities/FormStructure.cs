@@ -70,9 +70,6 @@ public class Section
     
     [BsonElement("SectionName")]
     public string SectionName { get; set; } 
-    
-    [BsonElement("SectionIndex")]
-    public long SectionIndex { get; set; }
 
     [BsonElement("SectionProperties")]
     public SectionProperty SectionProperties { get; set; } 
@@ -87,7 +84,7 @@ public class SectionProperty
     public string SectionFontName { get; set; } 
 
     [BsonElement("SectionFontSize")] 
-    public string SectionFontSize { get; set; } 
+    public int SectionFontSize { get; set; } 
         
     [BsonElement("SectionFontColor")]
     public string SectionFontColor { get; set; }
@@ -99,14 +96,8 @@ public class SectionProperty
 public class Component
 {
     [BsonElement("ComponentId")] 
-    public string ComponentId { get; set; } 
-    
-    [BsonElement("ComponentIndex")] 
-    public long ComponentIndex { get; set; } 
-    
-    [BsonElement("ComponentLabel")] 
-    public string ComponentLabel { get; set; } 
-    
+    public string ComponentId { get; set; }
+
     [BsonElement("ComponentType")] 
     public string ComponentType { get; set; }
 
@@ -135,29 +126,63 @@ public class ComponentProperty
     public string SubheadingFontColor { get; set; } 
     
     [BsonElement("HeadingFontSize")]
-    public string HeadingFontSize { get; set; } 
+    public int HeadingFontSize { get; set; } 
     
     [BsonElement("SubheadingFontSize")]
-    public string SubheadingFontSize { get; set; }
+    public int SubheadingFontSize { get; set; }
 
     [BsonElement("Validation")]
-    public Validations Validation { get; set; }
+    public string Validation { get; set; }
+    
+    [BsonElement("LabelText")]
+    public string LabelText { get; set; }
+    
+    [BsonElement("SubLabelText")]
+    public string SubLabelText { get; set; }
+    
+    [BsonElement("Required")]
+    public bool Required { get; set; }
+    
+    [BsonElement("Placeholder")]
+    public string Placeholder { get; set; }
+    
+    [BsonElement("FixWidth")]
+    public bool FixWidth { get; set; }
+    
+    [BsonElement("Width")]
+    public int Width { get; set; }
+    
+    [BsonElement("ReadOnly")]
+    public bool ReadOnly { get; set; }
+    
+    [BsonElement("CharacterLimit")]
+    public bool CharacterLimit { get; set; }
+    
+    [BsonElement("CharacterLimitValue")]
+    public int CharacterLimitValue { get; set; }
+    
+    [BsonElement("FontColor")]
+    public string FontColor { get; set; }
+    
+    [BsonElement("InputBgColor")]
+    public string InputBgColor { get; set; }
+    
+    [BsonElement("BorderColor")]
+    public string BorderColor { get; set; }
+    
+    [BsonElement("LabelFontSize")]
+    public int LabelFontSize { get; set; }
+    
+    [BsonElement("PredefinedOptions")]
+    public string PredefinedOptions { get; set; }
+    
+    [BsonElement("Options")]
+    public List<string> Options { get; set; }
+    
+    [BsonElement("MultipleChoice")]
+    public bool MultipleChoice { get; set; }
+    
+    [BsonElement("SpreadToColumns")]
+    public bool SpreadToColumns { get; set; }
 }
 
-public class Validations
-{
-    [BsonElement("Day")]
-    public string Day { get; set; }
-    
-    [BsonElement("Gender")]
-    public string Gender { get; set; }
-        
-    [BsonElement("Month")]
-    public string Month { get; set; }
-    
-    [BsonElement("Priority")]
-     public string Priority { get; set; }
-            
-    [BsonElement("Status")]
-     public string Status { get; set; }
-}

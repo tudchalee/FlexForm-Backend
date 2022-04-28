@@ -6,7 +6,6 @@ using Microsoft.Extensions.Options;
 using FlexForm_Backend.Authorization;
 using FlexForm_Backend.Helper;
 
-
 namespace FlexForm_Backend.Controllers;
 
 [Route("api/[controller]")]
@@ -57,19 +56,18 @@ public class UserController : ControllerBase
         return Ok(new {message = "Registration Successful"});
     }
     
-    [HttpPut("{id}")]
-    public IActionResult Update(string id, UpdateRequest model)
-    {
-        _userService.Update(id, model);
-        return Ok(new { message = "User updated successfully" });
-    }
+    // [HttpPut("{id}")]
+    // public IActionResult Update(string id, UpdateRequest model)
+    // {
+    //     _userService.Update(id, model);
+    //     return Ok(new { message = "User updated successfully" });
+    // }
+    //
+    // [HttpGet("EditUser{id}")]
+    // public IActionResult ShowEditUser(string id)
+    // {
+    //     var user = _userService.ShowEditUser(id);
+    //     return Ok(user);
+    // }
     
-    [HttpGet("EditUser{id}")]
-    public IActionResult ShowEditUser(string id)
-    {
-        var user = _userService.ShowEditUser(id);
-        return Ok(user);
-    }
-    
-
 }
