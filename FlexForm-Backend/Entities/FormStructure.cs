@@ -3,7 +3,6 @@ using MongoDB.Bson.Serialization.Attributes;
 
 namespace FlexForm_Backend.Entities;
 
-// [BsonIgnoreExtraElements]
 public class FormStructure
 {
     [BsonId]

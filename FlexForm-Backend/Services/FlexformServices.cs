@@ -19,7 +19,7 @@ public class FlexformServices : IFlexformService
     public FlexformServices(FlexformDatabaseSettings settings, IMongoClient mongoClient)
     {
         var database = mongoClient.GetDatabase(settings.DatabaseName);
-        _formStructures = database.GetCollection<FormStructure>(settings.FlexformCollectionName);
+        _formStructures = database.GetCollection<FormStructure>(settings.FlexformCollectionName[0]);
     }
 
     public FormStructure Create(FormStructure formStructure)
@@ -45,8 +45,6 @@ public class FlexformServices : IFlexformService
 
      public void Update(string id, FormStructure formStructure)
      {
-         Console.WriteLine(id);
-         Console.WriteLine(formStructure.FormId);
          _formStructures.ReplaceOne(form => form.FormId == id, formStructure);
      }
 }

@@ -12,15 +12,15 @@ public class FlexformController: ControllerBase
     {
         this.flexformService = flexformService;
     }
-    
-    // GET: api/<FlexformController>
+
+    // GET: api/Flexform/AllForm
     [HttpGet("AllForm")]
     public ActionResult<List<FormStructure>> GetAll()
     {
         return flexformService.GetAll();
     }
 
-    // GET api/<FlexformController>/5
+    // GET api/Flexform/{id}
     [HttpGet("{id}")]
     public ActionResult<FormStructure> GetById(string id)
     {
@@ -34,18 +34,15 @@ public class FlexformController: ControllerBase
         return form;
     }
     
-    // POST api/<FlexformController>/5
+    // POST api/Flexform/CreateForm
     [HttpPost("CreateForm")]
     public ActionResult<FormStructure> Post([FromBody] FormStructure form)
     {
         var savedForm = flexformService.Create(form);
         return savedForm;
-        
-        // flexformService.Create(form);
-        // return CreatedAtAction(nameof(Get), new {id = form.FormId}, form)
     }
     
-    // PUT api/<FlexformController>/5
+    // PUT api/Flexform/{id}
     [HttpPut("{id}")]
     public ActionResult Put(string id, [FromBody] FormStructure form)
     {
@@ -60,7 +57,7 @@ public class FlexformController: ControllerBase
         return NoContent();
     }
     
-    // DELETE api/<FlexformController>/5
+    // DELETE api/Flexform/{id}
     [HttpDelete("{id}")]
     public ActionResult Delete(string id)
     {
@@ -76,3 +73,45 @@ public class FlexformController: ControllerBase
         return Ok($"Form with Id = {id} deleted");
     }
 }
+
+public class FormInputController : ControllerBase
+{
+    private readonly IFormInputService forminputService;
+
+    public FormInputController(IFormInputService forminputService)
+    {
+        this.forminputService = forminputService;
+    }
+    
+        
+    // GET: api/Flexform/AllForm
+    [HttpGet("AllFormInput")]
+    public ActionResult<List<FormInput>> GetAllFormInput()
+    {
+        return forminputService.GetAllFormInput();
+    }
+
+    // GET api/Flexform/FormInput/{id}
+    [HttpGet("FormInput/{id}")]
+    public ActionResult<FormInput> GetByIdFormInput(string id)
+    {
+        var form = forminputService.GetByIdFormInput(id);
+    
+        if (form == null)
+        {
+            return NotFound($"Form with Id = {id} not found");
+        }
+    
+        return form;
+    }
+    
+    // POST api/Flexform/CreateForm
+    [HttpPost("CreateFormInput")]
+    public ActionResult<FormInput> Post([FromBody] FormInput form)
+    {
+        var savedForm = forminputService.CreateFormInput(form);
+        return savedForm;
+    }
+}
+    
+
