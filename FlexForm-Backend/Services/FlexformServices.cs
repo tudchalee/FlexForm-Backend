@@ -45,6 +45,8 @@ public class FlexformServices : IFlexformService
 
      public void Update(string id, FormStructure formStructure)
      {
-         _formStructures.ReplaceOne(form => formStructure.FormId == id, formStructure);
+         Console.WriteLine(id);
+         Console.WriteLine(formStructure.FormId);
+         _formStructures.ReplaceOne(form => form.FormId == id, formStructure);
      }
 }
