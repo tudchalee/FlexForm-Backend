@@ -28,7 +28,7 @@ public class SectionFormInput
     public string SectionId { get; set; } 
     
     [BsonElement("Components")] 
-    public List<ComponentFormInput> ComponentFormInput { get; set; }
+    public List<ComponentFormInput> Components { get; set; }
 }
 
 public class ComponentFormInput

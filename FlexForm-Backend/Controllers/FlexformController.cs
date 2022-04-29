@@ -74,6 +74,8 @@ public class FlexformController: ControllerBase
     }
 }
 
+[Route("api/[controller]")]
+[ApiController]
 public class FormInputController : ControllerBase
 {
     private readonly IFormInputService forminputService;
