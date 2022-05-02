@@ -95,7 +95,7 @@ public class FormInputController : ControllerBase
 
     // GET api/Flexform/FormInput/{id}
     [HttpGet("FormInput/{id}")]
-    public ActionResult<FormInput> GetByIdFormInput(string id)
+    public ActionResult<List<FormInput>> GetByIdFormInput(string id)
     {
         var form = forminputService.GetByIdFormInput(id);
     

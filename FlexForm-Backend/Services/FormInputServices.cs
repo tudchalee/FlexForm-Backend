@@ -8,7 +8,7 @@ namespace FlexForm_Backend.Services;
 public interface IFormInputService
 {
     List<FormInput> GetAllFormInput();
-    FormInput GetByIdFormInput(string id);
+    List<FormInput> GetByIdFormInput(string id);
     FormInput CreateFormInput(FormInput form);
 }
 public class FormInputServices : IFormInputService
@@ -31,8 +31,8 @@ public class FormInputServices : IFormInputService
         return _formInputs.Find(formInput => true).ToList();
     }
 
-    public FormInput GetByIdFormInput(string id)
+    public List<FormInput> GetByIdFormInput(string id)
     {
-        return _formInputs.Find(formInput => formInput.FormId == id).FirstOrDefault();
+        return _formInputs.Find(formInput => formInput.FormId == id).ToList();
     }
 }

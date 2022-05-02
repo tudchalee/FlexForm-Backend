@@ -15,6 +15,9 @@ public class FormStructures
     [BsonElement("FormName")] 
     public string FormName { get; set; }
     
+    [BsonElement("FormDescriptions")] 
+    public String FormDescriptions { get; set; }
+    
     [BsonElement("FormCreateTimestamp")] 
     public BsonTimestamp FormCreateTimestamp { get; set; }
     
