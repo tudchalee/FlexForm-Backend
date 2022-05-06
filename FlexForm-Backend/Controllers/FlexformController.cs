@@ -1,5 +1,8 @@
-﻿using FlexForm_Backend.Entities;
+﻿using System.Text;
+using FlexForm_Backend.Entities;
 using Microsoft.AspNetCore.Mvc;
+using OfficeOpenXml;
+using IHostingEnvironment = Microsoft.AspNetCore.Hosting.IHostingEnvironment;
 
 namespace FlexForm_Backend.Controllers;
 
@@ -115,5 +118,55 @@ public class FormInputController : ControllerBase
         return savedForm;
     }
 }
+
+[Route("api/[controller]")]
+[ApiController]
+public class ImportExportController : ControllerBase
+ {
+  private readonly IHostingEnvironment _hostingEnvironment;
+
+  public ImportExportController(IHostingEnvironment hostingEnvironment)
+  {
+   _hostingEnvironment = hostingEnvironment;
+  }
+  [HttpGet("Import")]
+  public string Import()
+    {
+      string sWebRootFolder = @"D:\";
+     string sFileName = @"UserList-25650506145952547.xlsx";
+     FileInfo file = new FileInfo(Path.Combine(sWebRootFolder, sFileName));
+     try
+     {
+      using (ExcelPackage package = new ExcelPackage(file))
+      {
+       StringBuilder sb = new StringBuilder();
+       ExcelWorksheet worksheet = package.Workbook.Worksheets[0];
+       int rowCount = worksheet.Dimension.Rows;
+       int ColCount = worksheet.Dimension.Columns;
+       bool bHeaderRow = true;
+       for (int row = 1; row <= rowCount; row++)
+       {
+        for (int col = 1; col <= ColCount; col++)
+        {
+         if (bHeaderRow)
+         {
+          sb.Append(worksheet.Cells[row, col].Value.ToString() + "\t");
+         }
+         else
+         {
+          sb.Append(worksheet.Cells[row, col].Value.ToString() + "\t");
+         }
+        }
+        sb.Append(Environment.NewLine);
+       }
+       return sb.ToString();
+      }
+     }
+     catch (Exception ex)
+     {
+      return "Some error occured while importing." + ex.Message;
+     }
+    }
+ }
     
 
