@@ -136,7 +136,7 @@ public class FormInputController : ControllerBase
     public ActionResult Delete(string id)
     {
         var form = forminputService.GetByMongoIdFormInput(id);
-        Console.WriteLine("Hello" + form);
+        
         if (form == null)
         {
             return NotFound($"Form with Id = {id} not found");
@@ -146,13 +146,22 @@ public class FormInputController : ControllerBase
     
         return Ok($"Form with Id = {id} deleted");
     }
-}
+    
+    // PUT api/FormInput/{id}
+    [HttpPut("{id}")]
+    public ActionResult Put(string id, [FromBody] FormInput form)
+    {
+        var existingForm = forminputService.GetByMongoIdFormInput(id);
+    
+        if (existingForm == null)
+        {
+            return NotFound($"Form with Id = {id} not found");
+        }
 
-
-[Route("api/[controller]")]
-[ApiController]
-public class ImportExportController : ControllerBase
-{
+        forminputService.UpdateIdFormInput(id, form);
+        return NoContent();
+    }
+    
     [HttpGet("Import")]
     public string Import()
     {
@@ -194,72 +203,95 @@ public class ImportExportController : ControllerBase
         }
     }
 
-    public List<ComponentFormInput> itemlist;
-        
+    // public List<ComponentFormInput> itemlist;
+
     [HttpGet("exportv2")]
-    public async Task<IActionResult> ExportV2(CancellationToken cancellationToken)
+    public async Task<IActionResult> ExportV2(CancellationToken cancellationToken, string id)
     {
+        var form = forminputService.GetByIdFormInput(id);
+        if (form == null)
+        {
+            return NotFound($"Form with Id = {id} not found");
+        }
+
+        // var item = form[1].Sections[1].Components[1].ComponentValue;
         // query data from database  
         await Task.Yield();
-        var list = new List<UserInfo>()
-        {
-            new UserInfo {UserName = "catcher", Age = 18},
-            new UserInfo {UserName = "james", Age = 20},
-        };
-        
-
         var stream = new MemoryStream();
 
-            using (var package = new ExcelPackage(stream))
-            {
-                var workSheet = package.Workbook.Worksheets.Add("Sheet1");
-                for (int i = 0; i < itemlist.Count; i++)
-                {
-                    var item = itemlist[i];
-                    workSheet.Cells[i + 2, 1].Value = item.ComponentValue;
-                }
-                workSheet.Cells.LoadFromCollection(list, true);
-                package.Save();
-            }
-
-            stream.Position = 0;
-            string excelName = $"UserList-{DateTime.Now.ToString("yyyyMMddHHmmssfff")}.xlsx";
-
-            //return File(stream, "application/octet-stream", excelName);  
-            return File(stream, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", excelName);
-        }
-
-        [HttpGet("export")]
-        public async Task<DemoResponse<string>> Export(CancellationToken cancellationToken)
+        using (var package = new ExcelPackage(stream))
         {
-            string folder = @"D:\Download";
-            string excelName = $"UserList-{DateTime.Now.ToString("yyyyMMddHHmmssfff")}.xlsx";
-            string downloadUrl = string.Format("{0}://{1}/{2}", Request.Scheme, Request.Host, excelName);
-            FileInfo file = new FileInfo(Path.Combine(folder, excelName));
-            if (file.Exists)
+            var workSheet = package.Workbook.Worksheets.Add("Sheet1");
+            for (int i = 0; i < form.Count; i++)
             {
-                file.Delete();
-                file = new FileInfo(Path.Combine(folder, excelName));
+                // Console.WriteLine("form count " + i + ": " + form.Count);
+                var item = form[i];
+                for (int j = 0; j < item.Sections.Count; j++)
+                {
+                    // Console.WriteLine("section count" + j + ": " + item.Sections.Count);
+                    var section = item.Sections[j];
+                    for (int k = 0; k < section.Components.Count; k++)
+                    {
+                        // Console.WriteLine("component count" + k + ": " + section.Components.Count);
+                        var component = section.Components[k];
+                        var label = component.ComponentLabel;
+                        var value = component.ComponentValue;
+                        workSheet.Cells[i + 2, k+1].Value = value;
+                        workSheet.Cells[1, k+1].Value = label;
+                    }
+                }
             }
 
-            // query data from database  
-            await Task.Yield();
-
-            var list = new List<UserInfo>()
-            {
-                new UserInfo {UserName = "catcher", Age = 18},
-                new UserInfo {UserName = "james", Age = 20},
-            };
-
-            using (var package = new ExcelPackage(file))
-            {
-                var workSheet = package.Workbook.Worksheets.Add("Sheet1");
-                workSheet.Cells.LoadFromCollection(list, true);
-                package.Save();
-            }
-
-            return DemoResponse<string>.GetResult(0, "OK", downloadUrl);
+            // workSheet.Cells.LoadFromCollection(list, true);
+            package.Save();
         }
+
+        stream.Position = 0;
+        string excelName = $"UserList-{DateTime.Now.ToString("yyyyMMddHHmmssfff")}.xlsx";
+
+        //return File(stream, "application/octet-stream", excelName);  
+        return File(stream, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", excelName);
+    }
+}
+
+
+[Route("api/[controller]")]
+[ApiController]
+public class ImportExportController : ControllerBase
+{
+    
+
+        // [HttpGet("export")]
+        // public async Task<DemoResponse<string>> Export(CancellationToken cancellationToken)
+        // {
+        //     string folder = @"D:\Download";
+        //     string excelName = $"UserList-{DateTime.Now.ToString("yyyyMMddHHmmssfff")}.xlsx";
+        //     string downloadUrl = string.Format("{0}://{1}/{2}", Request.Scheme, Request.Host, excelName);
+        //     FileInfo file = new FileInfo(Path.Combine(folder, excelName));
+        //     if (file.Exists)
+        //     {
+        //         file.Delete();
+        //         file = new FileInfo(Path.Combine(folder, excelName));
+        //     }
+        //
+        //     // query data from database  
+        //     await Task.Yield();
+        //
+        //     var list = new List<UserInfo>()
+        //     {
+        //         new UserInfo {UserName = "catcher", Age = 18},
+        //         new UserInfo {UserName = "james", Age = 20},
+        //     };
+        //
+        //     using (var package = new ExcelPackage(file))
+        //     {
+        //         var workSheet = package.Workbook.Worksheets.Add("Sheet1");
+        //         workSheet.Cells.LoadFromCollection(list, true);
+        //         package.Save();
+        //     }
+        //
+        //     return DemoResponse<string>.GetResult(0, "OK", downloadUrl);
+        // }
     }
 
 

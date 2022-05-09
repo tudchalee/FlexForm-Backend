@@ -3,6 +3,7 @@ using FlexForm_Backend.Models;
 using FlexForm_Backend.Helper;
 using Microsoft.EntityFrameworkCore.Metadata;
 using MongoDB.Driver;
+using OfficeOpenXml;
 
 namespace FlexForm_Backend.Services;
 public interface IFormInputService
@@ -12,7 +13,7 @@ public interface IFormInputService
     FormInput GetByMongoIdFormInput(string id);
     FormInput CreateFormInput(FormInput form);
     void RemoveByMongoId(string id);
-    // ImportExport GetExport();
+    void UpdateIdFormInput(string id, FormInput form);
 }
 public class FormInputServices : IFormInputService
 {
@@ -48,9 +49,10 @@ public class FormInputServices : IFormInputService
     {
         _formInputs.DeleteOne(formInput => formInput.Id == id);
     }
+    
+    public void UpdateIdFormInput(string id, FormInput formInput)
+    {
+        _formInputs.ReplaceOne(form => form.Id == id, formInput);
+    }
 
-    // public ImportExport GetExport()
-    // {
-    //     return WebRootPath;
-    // }
 }
