@@ -74,32 +74,20 @@ public class FlexformController: ControllerBase
     
         return Ok($"Form with Id = {id} deleted");
     }
-}
-
-[Route("api/[controller]")]
-[ApiController]
-public class FormInputController : ControllerBase
-{
-    private readonly IFormInputService forminputService;
-
-    public FormInputController(IFormInputService forminputService)
-    {
-        this.forminputService = forminputService;
-    }
     
-        
+    // Form Input
     // GET: api/FlexInput/AllForm
-    [HttpGet("AllFormInput")]
+    [HttpGet("FormInput/AllFormInput")]
     public ActionResult<List<FormInput>> GetAllFormInput()
     {
-        return forminputService.GetAllFormInput();
+        return flexformService.GetAllFormInput();
     }
 
     // GET api/FormInput/FormInput/{id}
-    [HttpGet("FormInput/{id}")]
+    [HttpGet("FormInput/FormInput/{id}")]
     public ActionResult<List<FormInput>> GetByIdFormInput(string id)
     {
-        var form = forminputService.GetByIdFormInput(id);
+        var form = flexformService.GetByIdFormInput(id);
     
         if (form == null)
         {
@@ -110,10 +98,10 @@ public class FormInputController : ControllerBase
     }
     
     // GET api/FormInput/Mongo/{id}
-    [HttpGet("Mongo/{id}")]
+    [HttpGet("FormInput/Mongo/{id}")]
     public ActionResult<FormInput> GetByMongoIdFormInput(string id)
     {
-        var form = forminputService.GetByMongoIdFormInput(id);
+        var form = flexformService.GetByMongoIdFormInput(id);
     
         if (form == null)
         {
@@ -124,141 +112,142 @@ public class FormInputController : ControllerBase
     }
     
     // POST api/FormInput/CreateForm
-    [HttpPost("CreateFormInput")]
+    [HttpPost("FormInput/CreateFormInput")]
     public ActionResult<FormInput> Post([FromBody] FormInput form)
     {
-        var savedForm = forminputService.CreateFormInput(form);
+        var savedForm = flexformService.CreateFormInput(form);
         return savedForm;
     }
     
     //DELETE api/FormInput/Delete/Mongo/{id}
-    [HttpDelete("Delete/Mongo/{id}")]
-    public ActionResult Delete(string id)
+    [HttpDelete("FormInput/Delete/Mongo/{id}")]
+    public ActionResult DeleteMongo(string id)
     {
-        var form = forminputService.GetByMongoIdFormInput(id);
+        var form = flexformService.GetByMongoIdFormInput(id);
         
         if (form == null)
         {
             return NotFound($"Form with Id = {id} not found");
         }
         
-        forminputService.RemoveByMongoId(form.Id);
+        flexformService.RemoveByMongoId(form.Id);
     
         return Ok($"Form with Id = {id} deleted");
     }
     
     // PUT api/FormInput/{id}
-    [HttpPut("{id}")]
+    [HttpPut("FormInput/{id}")]
     public ActionResult Put(string id, [FromBody] FormInput form)
     {
-        var existingForm = forminputService.GetByMongoIdFormInput(id);
+        var existingForm = flexformService.GetByMongoIdFormInput(id);
     
         if (existingForm == null)
         {
             return NotFound($"Form with Id = {id} not found");
         }
 
-        forminputService.UpdateIdFormInput(id, form);
+        flexformService.UpdateIdFormInput(id, form);
         return NoContent();
-    }
-    
-    [HttpGet("Import")]
-    public string Import()
-    {
-        string sWebRootFolder = @"D:\";
-        string sFileName = @"UserList-25650506145952547.xlsx";
-        FileInfo file = new FileInfo(Path.Combine(sWebRootFolder, sFileName));
-        try
-        {
-            using (ExcelPackage package = new ExcelPackage(file))
-            {
-                StringBuilder sb = new StringBuilder();
-                ExcelWorksheet worksheet = package.Workbook.Worksheets[0];
-                int rowCount = worksheet.Dimension.Rows;
-                int ColCount = worksheet.Dimension.Columns;
-                bool bHeaderRow = true;
-                for (int row = 1; row <= rowCount; row++)
-                {
-                    for (int col = 1; col <= ColCount; col++)
-                    {
-                        if (bHeaderRow)
-                        {
-                            sb.Append(worksheet.Cells[row, col].Value.ToString() + "\t");
-                        }
-                        else
-                        {
-                            sb.Append(worksheet.Cells[row, col].Value.ToString() + "\t");
-                        }
-                    }
-
-                    sb.Append(Environment.NewLine);
-                }
-
-                return sb.ToString();
-            }
-        }
-        catch (Exception ex)
-        {
-            return "Some error occured while importing." + ex.Message;
-        }
-    }
-
-    // public List<ComponentFormInput> itemlist;
-
-    [HttpGet("exportv2")]
-    public async Task<IActionResult> ExportV2(CancellationToken cancellationToken, string id)
-    {
-        var form = forminputService.GetByIdFormInput(id);
-        if (form == null)
-        {
-            return NotFound($"Form with Id = {id} not found");
-        }
-
-        // var item = form[1].Sections[1].Components[1].ComponentValue;
-        // query data from database  
-        await Task.Yield();
-        var stream = new MemoryStream();
-
-        using (var package = new ExcelPackage(stream))
-        {
-            var workSheet = package.Workbook.Worksheets.Add("Sheet1");
-            for (int i = 0; i < form.Count; i++)
-            {
-                // Console.WriteLine("form count " + i + ": " + form.Count);
-                var item = form[i];
-                for (int j = 0; j < item.Sections.Count; j++)
-                {
-                    // Console.WriteLine("section count" + j + ": " + item.Sections.Count);
-                    var section = item.Sections[j];
-                    for (int k = 0; k < section.Components.Count; k++)
-                    {
-                        // Console.WriteLine("component count" + k + ": " + section.Components.Count);
-                        var component = section.Components[k];
-                        var label = component.ComponentLabel;
-                        var value = component.ComponentValue;
-                        workSheet.Cells[i + 2, k+1].Value = value;
-                        workSheet.Cells[1, k+1].Value = label;
-                    }
-                }
-            }
-
-            // workSheet.Cells.LoadFromCollection(list, true);
-            package.Save();
-        }
-
-        stream.Position = 0;
-        string excelName = $"UserList-{DateTime.Now.ToString("yyyyMMddHHmmssfff")}.xlsx";
-
-        //return File(stream, "application/octet-stream", excelName);  
-        return File(stream, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", excelName);
     }
 }
 
+//     [HttpGet("Import")]
+//     public string Import()
+//     {
+//         string sWebRootFolder = @"D:\";
+//         string sFileName = @"UserList-25650506145952547.xlsx";
+//         FileInfo file = new FileInfo(Path.Combine(sWebRootFolder, sFileName));
+//         try
+//         {
+//             using (ExcelPackage package = new ExcelPackage(file))
+//             {
+//                 StringBuilder sb = new StringBuilder();
+//                 ExcelWorksheet worksheet = package.Workbook.Worksheets[0];
+//                 int rowCount = worksheet.Dimension.Rows;
+//                 int ColCount = worksheet.Dimension.Columns;
+//                 bool bHeaderRow = true;
+//                 for (int row = 1; row <= rowCount; row++)
+//                 {
+//                     for (int col = 1; col <= ColCount; col++)
+//                     {
+//                         if (bHeaderRow)
+//                         {
+//                             sb.Append(worksheet.Cells[row, col].Value.ToString() + "\t");
+//                         }
+//                         else
+//                         {
+//                             sb.Append(worksheet.Cells[row, col].Value.ToString() + "\t");
+//                         }
+//                     }
+//
+//                     sb.Append(Environment.NewLine);
+//                 }
+//
+//                 return sb.ToString();
+//             }
+//         }
+//         catch (Exception ex)
+//         {
+//             return "Some error occured while importing." + ex.Message;
+//         }
+//     }
+//
+//     // public List<ComponentFormInput> itemlist;
+//
+//     [HttpGet("export")]
+//     public async Task<IActionResult> ExportV2(CancellationToken cancellationToken, string id)
+//     {
+//         var form = forminputService.GetByIdFormInput(id);
+//         if (form == null)
+//         {
+//             return NotFound($"Form with Id = {id} not found");
+//         }
+//
+//         // var item = form[1].Sections[1].Components[1].ComponentValue;
+//         // query data from database  
+//         await Task.Yield();
+//         var stream = new MemoryStream();
+//
+//         using (var package = new ExcelPackage(stream))
+//         {
+//             var workSheet = package.Workbook.Worksheets.Add("Sheet1");
+//             for (int i = 0; i < form.Count; i++)
+//             {
+//                 // Console.WriteLine("form count " + i + ": " + form.Count);
+//                 var item = form[i];
+//                 for (int j = 0; j < item.Sections.Count; j++)
+//                 {
+//                     // Console.WriteLine("section count" + j + ": " + item.Sections.Count);
+//                     var section = item.Sections[j];
+//                     for (int k = 0; k < section.Components.Count; k++)
+//                     {
+//                         // Console.WriteLine("component count" + k + ": " + section.Components.Count);
+//                         var component = section.Components[k];
+//                         var label = component.ComponentLabel;
+//                         var value = component.ComponentValue;
+//                         workSheet.Cells[i + 2, k+1].Value = value;
+//                         workSheet.Cells[1, k+1].Value = label;
+//                     }
+//                 }
+//             }
+//
+//             // workSheet.Cells.LoadFromCollection(list, true);
+//             package.Save();
+//         }
+//
+//         stream.Position = 0;
+//         string excelName = $"UserList-{DateTime.Now.ToString("yyyyMMddHHmmssfff")}.xlsx";
+//
+//         //return File(stream, "application/octet-stream", excelName);  
+//         return File(stream, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", excelName);
+//     }
+// }
 
-[Route("api/[controller]")]
-[ApiController]
-public class ImportExportController : ControllerBase
-{
+
+// [Route("api/[controller]")]
+// [ApiController]
+// public class ImportExportController : ControllerBase
+// {
     
 
         // [HttpGet("export")]
@@ -292,6 +281,6 @@ public class ImportExportController : ControllerBase
         //
         //     return DemoResponse<string>.GetResult(0, "OK", downloadUrl);
         // }
-    }
+    // }
 
 

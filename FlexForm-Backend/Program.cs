@@ -17,7 +17,6 @@ builder.Services.AddSingleton<FlexformDatabaseSettings>(sp =>
 builder.Services.AddSingleton<IMongoClient>(s =>
     new MongoClient(builder.Configuration.GetValue<string>("FlexformDatabaseSettings:ConnectionString")));
 builder.Services.AddScoped<IFlexformService, FlexformServices>();
-builder.Services.AddScoped<IFormInputService, FormInputServices>();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
@@ -34,8 +33,6 @@ builder.Services.AddCors(options =>
             corsPolicyBuilder.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod();
         });
 });
-
-
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
