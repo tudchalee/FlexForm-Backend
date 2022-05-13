@@ -17,11 +17,13 @@ public interface IFlexformService
     List<FormInput> GetByIdFormInput(string id);
     FormInput GetByMongoIdFormInput(string id);
     FormInput CreateFormInput(FormInput form);
+    void RemoveAllByFormId(string id);
     void RemoveByMongoId(string id);
     void UpdateIdFormInput(string id, FormInput form);
     
     List<TicketInput> GetAllTicketInput();
     List<TicketInput> GetByIdTicketInput(string id);
+    List<TicketInput> GetByTicketIdTicketInput(string id);
     TicketInput GetByMongoIdTicketInput(string id);
     TicketInput CreateTicketInput(TicketInput form);
     void RemoveTicketByMongoId(string id);
@@ -87,7 +89,12 @@ public class FlexformServices : IFlexformService
      {
          return _formInputs.Find(formInput => formInput.Id == id).FirstOrDefault();
      }
-        
+      
+     public void RemoveAllByFormId(string id)
+     {
+         _formInputs.DeleteMany(formInput => formInput.FormId == id);
+     }
+     
      public void RemoveByMongoId(string id)
      {
          _formInputs.DeleteOne(formInput => formInput.Id == id);
@@ -115,11 +122,16 @@ public class FlexformServices : IFlexformService
          return _ticketInputs.Find(ticketInput => ticketInput.FormId == id).ToList();
      }
         
+     public List<TicketInput> GetByTicketIdTicketInput(string id)
+     {
+         return _ticketInputs.Find(ticketInput => ticketInput.TicketId == id).ToList();
+     }
+     
      public TicketInput GetByMongoIdTicketInput(string id)
      {
          return _ticketInputs.Find(ticketInput => ticketInput.Id == id).FirstOrDefault();
      }
-        
+
      public void RemoveTicketByMongoId(string id)
      {
          _ticketInputs.DeleteOne(ticketInput => ticketInput.Id == id);

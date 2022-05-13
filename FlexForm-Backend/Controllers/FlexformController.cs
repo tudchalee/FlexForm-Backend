@@ -69,14 +69,14 @@ public class FlexformController : ControllerBase
     public ActionResult Delete(string id)
     {
         var form = flexformService.GetById(id);
-
+        var forminput = flexformService.GetByIdFormInput(id);
         if (form == null)
         {
             return NotFound($"Form with Id = {id} not found");
         }
 
         flexformService.Remove(form.FormId);
-
+        flexformService.RemoveAllByFormId(forminput[0].FormId);
         return Ok($"Form with Id = {id} deleted");
     }
 
@@ -177,6 +177,19 @@ public class FlexformController : ControllerBase
         return form;
     }
 
+    [HttpGet("TicketInput/TicketId/{id}")]
+    public ActionResult<List<TicketInput>> GetByTicketIdTicketInput(string id)
+    {
+        var form = flexformService.GetByTicketIdTicketInput(id);
+
+        if (form == null)
+        {
+            return NotFound($"Form with Id = {id} not found");
+        }
+
+        return form;
+    }
+    
     // GET api/TicketInput/Mongo/{id}
     [HttpGet("TicketInput/Mongo/{id}")]
     public ActionResult<TicketInput> GetByMongoIdTicketInput(string id)
@@ -380,25 +393,7 @@ public class FlexformController : ControllerBase
                 }
                 string[] uniqueLabel = allLabel.Distinct().ToArray();
                 Console.WriteLine(uniqueLabel.Length);
-                
-                // for (int i = 0; i < form.Count; i++)
-                // {
-                //     int columnIndex = 1;
-                //     var item = form[i];
-                //     for (int j = 0; j < item.Sections.Count; j++)
-                //     {
-                //         var section = item.Sections[j];
-                //         for (int k = 0; k < section.Components.Count; k++)
-                //         {
-                //             var component = section.Components[k];
-                //             var label = component.ComponentLabel;
-                //             var value = component.ComponentValue;
-                //             allLabel[columnIndex] = label;
-                //             columnIndex += 1;
-                //         }
-                //     }
-                // }
-                
+
                 for (int row = 1; row <= rowCount; row++)
                 {
                     for (int col = 1; col <= ColCount; col++)
