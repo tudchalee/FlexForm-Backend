@@ -1,7 +1,10 @@
-﻿using System.Data;
+﻿using System.Collections;
+using System.Collections.Specialized;
+using System.Data;
 using System.Text;
 using FlexForm_Backend.Entities;
 using Microsoft.AspNetCore.Mvc;
+using MongoDB.Bson;
 using OfficeOpenXml;
 
 namespace FlexForm_Backend.Controllers;
@@ -228,74 +231,57 @@ public class FlexformController : ControllerBase
     }
 
     // Export and Import
-    [HttpGet("export")]
-    public async Task<IActionResult> Export(CancellationToken cancellationToken, string id)
+    [HttpGet("exportBasic")]
+    public async Task<IActionResult> ExportBasic(CancellationToken cancellationToken, string id)
     {
-        var form = flexformService.GetByIdFormInput(id);
-        string[] componentList;
-        string[] componentValue;
-
-        int formCount = 0;
-        int sectionCount = 0;
-        int cCount = 0;
-
-        if (form == null)
+        var formStructure = flexformService.GetById(id);
+        var responses = flexformService.GetByIdFormInput(id);
+        
+        if (responses == null)
         {
             return NotFound($"Form with Id = {id} not found");
         }
 
-        for (int i = 0; i < form.Count; i++)
-        {
-            formCount = form.Count;
-            var item = form[i];
-            sectionCount = item.Sections.Count;
-            for (int j = 0; j < item.Sections.Count; j++)
-            {
-                var section = item.Sections[j];
-                for (int k = 0; k < section.Components.Count; k++)
-                {
-                    cCount += 1;
-                }
-            }
-        }
-        
-        string[,,] sectionData = new string[formCount,sectionCount,cCount];
-        componentList = new string[cCount];
-        componentValue = new string[cCount];
-        int index = 0;
-        int componentCount = 0;
+        List<string> componentLabels = new List<string>();
 
-        for (int i = 0; i < form.Count; i++)
+        foreach (var section in formStructure.Sections)
         {
-            var item = form[i];
-            for (int j = 0; j < item.Sections.Count; j++)
+            foreach (var component in section.Components)
             {
-                var section = item.Sections[j];
-                for (int k = 0; k < section.Components.Count; k++)
+                if (component.ComponentType != "heading" && component.ComponentType != "paragraph")
                 {
-                    if(componentCount > section.Components.Count){}
-                    else if (componentCount > section.Components.Count){}
-                    componentCount = section.Components.Count;
-                    var component = section.Components[k];
-                    var labelArray = component.ComponentLabel.ToArray();
-                    var inputArray = component.ComponentValue.ToArray();
-                    string labelValue = labelArray[0];
-                    string inputValue = inputArray[0];
-                    sectionData[i,j, k] = labelValue;
-                    // componentList[index] = labelValue;
-                    // componentValue[index] = inputValue;
-                    // index += 1;
-                    Console.WriteLine("section data at [" + i + "," +j + "," + k + "] " + sectionData[i,j,k]);
+                    componentLabels.Add(component.ComponentProperties.LabelText);
                 }
             }
         }
 
-        // Array.ForEach(componentList, i => Console.WriteLine(i));
-        // string[] uniqueLabel = componentList.Distinct().ToArray();
-        // string[][] uniqueLabel1 = sectionData.Distinct().ToArray();
-        // Console.WriteLine("Array after removing duplicate values: ");
-   
-        
+        var keyValList = new List<Dictionary<string, string>>();
+
+        foreach (var response in responses)
+        {
+            var resKV = new Dictionary<string, string>();
+            foreach (var section in response.Sections)
+            {
+                foreach (var component in section.Components)
+                {
+                    resKV.Add(component.ComponentLabel[0],String.Join(", ", component.ComponentValue));
+                }
+            }
+
+            var kv = new Dictionary<string, string>();
+            foreach (var key in componentLabels)
+            {
+                if (resKV.ContainsKey(key))
+                {
+                    kv.Add(key, resKV[key]);
+                }
+                else
+                    kv.Add(key, String.Empty);
+            }
+
+            keyValList.Add(kv);
+        }
+
         // query data from database  
         await Task.Yield();
         var stream = new MemoryStream();
@@ -305,162 +291,137 @@ public class FlexformController : ControllerBase
             var workSheet = package.Workbook.Worksheets.Add("Sheet1");
 
             DataTable dataTable = new DataTable();
-            DataColumn column;
             DataRow row;
-            // for (int i = 0; i < uniqueLabel.Length; i++)
-            // {
-            //     dataTable.Columns.Add(uniqueLabel[i]);
-            // }
-            // workSheet.Cells["A1"].LoadFromDataTable(dataTable, true);
-            //
-            // var dataRow = dataTable.NewRow();
+
+            foreach (var label in componentLabels)
+            {
+                dataTable.Columns.Add(label);
+            }
             
-            // workSheet.Cells[1, 1].Value = componentList[0];
-            // workSheet.Cells[1, 2].Value = componentList[1];
-            // workSheet.Cells[1, 3].Value = componentList[2];
+            foreach (var kvRow in keyValList)
+            {
+                row = dataTable.NewRow();
+                foreach (var key in componentLabels)
+                {
+                    row[key] = kvRow[key];
+                }
+                dataTable.Rows.Add(row.ItemArray);
+            }
+            
+            workSheet.Cells["A1"].LoadFromDataTable(dataTable, true);
+            
             package.Save();
         }
 
         stream.Position = 0;
-        string excelName = $"UserList-{DateTime.Now.ToString("yyyyMMddHHmmssfff")}.xlsx";
+        string excelName = formStructure.FormName + ".xlsx";
 
         //return File(stream, "application/octet-stream", excelName);  
         return File(stream, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", excelName);
     }
-
-    [HttpGet("exportBasic")]
-    public async Task<IActionResult> ExportBasic(CancellationToken cancellationToken, string id)
+    
+    [HttpGet("Import")]
+    public string Import(string filePath, string fileName, string id)
     {
+        string sWebRootFolder = filePath;
+        // @"D:\"
+        string sFileName = fileName;
+        // @"UserList-25650506145952547.xlsx"
+        FileInfo file = new FileInfo(Path.Combine(sWebRootFolder, sFileName));
+        
         var form = flexformService.GetByIdFormInput(id);
         if (form == null)
         {
-            return NotFound($"Form with Id = {id} not found");
+            return ($"Form with Id = {id} not found");
         }
 
-        var stream = new MemoryStream();
-
-        using (var package = new ExcelPackage(stream))
+        int count = 0;
+        for (int i = 0; i < form.Count; i++)
         {
-            var workSheet = package.Workbook.Worksheets.Add("Sheet1");
-
-            for (int i = 0; i < form.Count; i++)
+            var item = form[i];
+            for (int j = 0; j < item.Sections.Count; j++)
             {
-                int columnIndex = 1;
-                // Console.WriteLine("form count " + i + ": " + form.Count);
-                var item = form[i];
-                for (int j = 0; j < item.Sections.Count; j++)
+                var section = item.Sections[j];
+                for (int k = 0; k < section.Components.Count; k++)
                 {
-                    // Console.WriteLine("section count" + j + ": " + item.Sections.Count);
-                    var section = item.Sections[j];
-                    for (int k = 0; k < section.Components.Count; k++)
-                    {
-                        // Console.WriteLine("component count" + k + ": " + section.Components.Count);
-                        var component = section.Components[k];
-                        var label = component.ComponentLabel;
-                        var value = component.ComponentValue;
-                        workSheet.Cells[1, columnIndex].Value = label;
-                        workSheet.Cells[i + 2, columnIndex].Value = value;
-                        columnIndex += 1;
-                    }
+                    count += 1;
                 }
             }
-            package.Save();
         }
+        
+        try
+        {
+            using (ExcelPackage package = new ExcelPackage(file))
+            {
+                StringBuilder sb = new StringBuilder();
+                ExcelWorksheet worksheet = package.Workbook.Worksheets[0];
+                int rowCount = worksheet.Dimension.Rows;
+                int ColCount = worksheet.Dimension.Columns;
+                bool bHeaderRow = true;
+                
+                int index = 0;
+                string[] allLabel = new string [count];
+                for (int i = 0; i < form.Count; i++)
+                {
+                    int columnIndex = 1;
+                    var item = form[i];
+                    for (int j = 0; j < item.Sections.Count; j++)
+                    {
+                        var section = item.Sections[j];
+                        for (int k = 0; k < section.Components.Count; k++)
+                        {
+                            var component = section.Components[k];
+                            var labelArray = component.ComponentLabel;
+                            string labelValue = labelArray[0];
+                            allLabel[index] = labelValue;
+                            index += 1;
+                        }
+                    }
+                }
+                string[] uniqueLabel = allLabel.Distinct().ToArray();
+                Console.WriteLine(uniqueLabel.Length);
+                
+                // for (int i = 0; i < form.Count; i++)
+                // {
+                //     int columnIndex = 1;
+                //     var item = form[i];
+                //     for (int j = 0; j < item.Sections.Count; j++)
+                //     {
+                //         var section = item.Sections[j];
+                //         for (int k = 0; k < section.Components.Count; k++)
+                //         {
+                //             var component = section.Components[k];
+                //             var label = component.ComponentLabel;
+                //             var value = component.ComponentValue;
+                //             allLabel[columnIndex] = label;
+                //             columnIndex += 1;
+                //         }
+                //     }
+                // }
+                
+                for (int row = 1; row <= rowCount; row++)
+                {
+                    for (int col = 1; col <= ColCount; col++)
+                    {
+                        if (bHeaderRow)
+                        {
+                            sb.Append(worksheet.Cells[row, col].Value.ToString() + "\t");
+                        }
+                        else
+                        {
+                            sb.Append(worksheet.Cells[row, col].Value.ToString() + "\t");
+                        }
+                    }
 
-        stream.Position = 0;
-        string excelName = $"UserList-{DateTime.Now.ToString("yyyyMMddHHmmssfff")}.xlsx";
-        //return File(stream, "application/octet-stream", excelName);  
-        return File(stream, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", excelName);
+                    sb.Append(Environment.NewLine);
+                }
+
+                return sb.ToString();
+            }
+        }
+        catch (Exception ex)
+        {
+            return "Some error occured while importing." + ex.Message;
+        }
     }
 }
-
-
-
-
-
-//     [HttpGet("Import")]
-//     public string Import()
-//     {
-//         string sWebRootFolder = @"D:\";
-//         string sFileName = @"UserList-25650506145952547.xlsx";
-//         FileInfo file = new FileInfo(Path.Combine(sWebRootFolder, sFileName));
-//         try
-//         {
-//             using (ExcelPackage package = new ExcelPackage(file))
-//             {
-//                 StringBuilder sb = new StringBuilder();
-//                 ExcelWorksheet worksheet = package.Workbook.Worksheets[0];
-//                 int rowCount = worksheet.Dimension.Rows;
-//                 int ColCount = worksheet.Dimension.Columns;
-//                 bool bHeaderRow = true;
-//                 for (int row = 1; row <= rowCount; row++)
-//                 {
-//                     for (int col = 1; col <= ColCount; col++)
-//                     {
-//                         if (bHeaderRow)
-//                         {
-//                             sb.Append(worksheet.Cells[row, col].Value.ToString() + "\t");
-//                         }
-//                         else
-//                         {
-//                             sb.Append(worksheet.Cells[row, col].Value.ToString() + "\t");
-//                         }
-//                     }
-//
-//                     sb.Append(Environment.NewLine);
-//                 }
-//
-//                 return sb.ToString();
-//             }
-//         }
-//         catch (Exception ex)
-//         {
-//             return "Some error occured while importing." + ex.Message;
-//         }
-//     }
-//
-//     // public List<ComponentFormInput> itemlist;
-//
-
-
-
-// [Route("api/[controller]")]
-// [ApiController]
-// public class ImportExportController : ControllerBase
-// {
-    
-
-        // [HttpGet("export")]
-        // public async Task<DemoResponse<string>> Export(CancellationToken cancellationToken)
-        // {
-        //     string folder = @"D:\Download";
-        //     string excelName = $"UserList-{DateTime.Now.ToString("yyyyMMddHHmmssfff")}.xlsx";
-        //     string downloadUrl = string.Format("{0}://{1}/{2}", Request.Scheme, Request.Host, excelName);
-        //     FileInfo file = new FileInfo(Path.Combine(folder, excelName));
-        //     if (file.Exists)
-        //     {
-        //         file.Delete();
-        //         file = new FileInfo(Path.Combine(folder, excelName));
-        //     }
-        //
-        //     // query data from database  
-        //     await Task.Yield();
-        //
-        //     var list = new List<UserInfo>()
-        //     {
-        //         new UserInfo {UserName = "catcher", Age = 18},
-        //         new UserInfo {UserName = "james", Age = 20},
-        //     };
-        //
-        //     using (var package = new ExcelPackage(file))
-        //     {
-        //         var workSheet = package.Workbook.Worksheets.Add("Sheet1");
-        //         workSheet.Cells.LoadFromCollection(list, true);
-        //         package.Save();
-        //     }
-        //
-        //     return DemoResponse<string>.GetResult(0, "OK", downloadUrl);
-        // }
-    // }
-
-
