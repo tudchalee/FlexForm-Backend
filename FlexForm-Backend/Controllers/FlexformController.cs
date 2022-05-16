@@ -76,7 +76,11 @@ public class FlexformController : ControllerBase
         }
 
         flexformService.Remove(form.FormId);
-        flexformService.RemoveAllByFormId(forminput[0].FormId);
+        if (forminput[0] != null)
+        {
+            flexformService.RemoveAllByFormId(forminput[0].FormId);
+        }
+
         return Ok($"Form with Id = {id} deleted");
     }
 
@@ -154,7 +158,7 @@ public class FlexformController : ControllerBase
         flexformService.UpdateIdFormInput(id, form);
         return NoContent();
     }
-    
+
     // Ticket Input
     // GET: api/Ticket/AllTicketInput
     [HttpGet("TicketInput/AllTicketInput")]
@@ -189,7 +193,7 @@ public class FlexformController : ControllerBase
 
         return form;
     }
-    
+
     // GET api/TicketInput/Mongo/{id}
     [HttpGet("TicketInput/Mongo/{id}")]
     public ActionResult<TicketInput> GetByMongoIdTicketInput(string id)
@@ -243,13 +247,13 @@ public class FlexformController : ControllerBase
         return NoContent();
     }
 
-    // Export and Import
+    // Export
     [HttpGet("exportBasic")]
-    public async Task<IActionResult> ExportBasic(CancellationToken cancellationToken, string id)
+    public async Task<IActionResult> ExportBasic(string id)
     {
         var formStructure = flexformService.GetById(id);
         var responses = flexformService.GetByIdFormInput(id);
-        
+
         if (responses == null)
         {
             return NotFound($"Form with Id = {id} not found");
@@ -277,7 +281,7 @@ public class FlexformController : ControllerBase
             {
                 foreach (var component in section.Components)
                 {
-                    resKV.Add(component.ComponentLabel[0],String.Join(", ", component.ComponentValue));
+                    resKV.Add(component.ComponentLabel[0], String.Join(", ", component.ComponentValue));
                 }
             }
 
@@ -310,7 +314,7 @@ public class FlexformController : ControllerBase
             {
                 dataTable.Columns.Add(label);
             }
-            
+
             foreach (var kvRow in keyValList)
             {
                 row = dataTable.NewRow();
@@ -318,11 +322,12 @@ public class FlexformController : ControllerBase
                 {
                     row[key] = kvRow[key];
                 }
+
                 dataTable.Rows.Add(row.ItemArray);
             }
-            
+
             workSheet.Cells["A1"].LoadFromDataTable(dataTable, true);
-            
+
             package.Save();
         }
 
@@ -332,91 +337,5 @@ public class FlexformController : ControllerBase
         //return File(stream, "application/octet-stream", excelName);  
         return File(stream, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", excelName);
     }
-    
-    [HttpGet("Import")]
-    public string Import(string filePath, string fileName, string id)
-    {
-        string sWebRootFolder = filePath;
-        // @"D:\"
-        string sFileName = fileName;
-        // @"UserList-25650506145952547.xlsx"
-        FileInfo file = new FileInfo(Path.Combine(sWebRootFolder, sFileName));
-        
-        var form = flexformService.GetByIdFormInput(id);
-        if (form == null)
-        {
-            return ($"Form with Id = {id} not found");
-        }
-
-        int count = 0;
-        for (int i = 0; i < form.Count; i++)
-        {
-            var item = form[i];
-            for (int j = 0; j < item.Sections.Count; j++)
-            {
-                var section = item.Sections[j];
-                for (int k = 0; k < section.Components.Count; k++)
-                {
-                    count += 1;
-                }
-            }
-        }
-        
-        try
-        {
-            using (ExcelPackage package = new ExcelPackage(file))
-            {
-                StringBuilder sb = new StringBuilder();
-                ExcelWorksheet worksheet = package.Workbook.Worksheets[0];
-                int rowCount = worksheet.Dimension.Rows;
-                int ColCount = worksheet.Dimension.Columns;
-                bool bHeaderRow = true;
-                
-                int index = 0;
-                string[] allLabel = new string [count];
-                for (int i = 0; i < form.Count; i++)
-                {
-                    int columnIndex = 1;
-                    var item = form[i];
-                    for (int j = 0; j < item.Sections.Count; j++)
-                    {
-                        var section = item.Sections[j];
-                        for (int k = 0; k < section.Components.Count; k++)
-                        {
-                            var component = section.Components[k];
-                            var labelArray = component.ComponentLabel;
-                            string labelValue = labelArray[0];
-                            allLabel[index] = labelValue;
-                            index += 1;
-                        }
-                    }
-                }
-                string[] uniqueLabel = allLabel.Distinct().ToArray();
-                Console.WriteLine(uniqueLabel.Length);
-
-                for (int row = 1; row <= rowCount; row++)
-                {
-                    for (int col = 1; col <= ColCount; col++)
-                    {
-                        if (bHeaderRow)
-                        {
-                            sb.Append(worksheet.Cells[row, col].Value.ToString() + "\t");
-                        }
-                        else
-                        {
-                            sb.Append(worksheet.Cells[row, col].Value.ToString() + "\t");
-                        }
-                    }
-
-                    sb.Append(Environment.NewLine);
-                }
-
-                return sb.ToString();
-            }
-        }
-        catch (Exception ex)
-        {
-            return "Some error occured while importing." + ex.Message;
-        }
-    }
 }
+    
