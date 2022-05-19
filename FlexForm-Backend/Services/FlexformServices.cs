@@ -13,21 +13,21 @@ public interface IFlexformService
     void Update(string id, FormStructure form);
     void Remove(string id);
     
-    List<FormInput> GetAllFormInput();
+    // List<FormInput> GetAllFormInput();
     List<FormInput> GetByIdFormInput(string id);
-    FormInput GetByMongoIdFormInput(string id);
+    // FormInput GetByMongoIdFormInput(string id);
     FormInput CreateFormInput(FormInput form);
     void RemoveAllByFormId(string id);
-    void RemoveByMongoId(string id);
-    void UpdateIdFormInput(string id, FormInput form);
+    // void RemoveByMongoId(string id);
+    // void UpdateIdFormInput(string id, FormInput form);
     
-    List<TicketInput> GetAllTicketInput();
+    // List<TicketInput> GetAllTicketInput();
     List<TicketInput> GetByIdTicketInput(string id);
     List<TicketInput> GetByTicketIdTicketInput(string id);
-    TicketInput GetByMongoIdTicketInput(string id);
+    // TicketInput GetByMongoIdTicketInput(string id);
     TicketInput CreateTicketInput(TicketInput form);
-    void RemoveTicketByMongoId(string id);
-    void UpdateIdTicketInput(string id, TicketInput form);
+    // void RemoveTicketByMongoId(string id);
+    // void UpdateIdTicketInput(string id, TicketInput form);
 }
 public class FlexformServices : IFlexformService
 {
@@ -75,35 +75,35 @@ public class FlexformServices : IFlexformService
          return formInput;
      }
 
-     public List<FormInput> GetAllFormInput()
-     {
-         return _formInputs.Find(formInput => true).ToList();
-     }
+     // public List<FormInput> GetAllFormInput()
+     // {
+     //     return _formInputs.Find(formInput => true).ToList();
+     // }
 
      public List<FormInput> GetByIdFormInput(string id)
      {
          return _formInputs.Find(formInput => formInput.FormId == id).ToList();
      }
         
-     public FormInput GetByMongoIdFormInput(string id)
-     {
-         return _formInputs.Find(formInput => formInput.Id == id).FirstOrDefault();
-     }
+     // public FormInput GetByMongoIdFormInput(string id)
+     // {
+     //     return _formInputs.Find(formInput => formInput.Id == id).FirstOrDefault();
+     // }
       
      public void RemoveAllByFormId(string id)
      {
          _formInputs.DeleteMany(formInput => formInput.FormId == id);
      }
      
-     public void RemoveByMongoId(string id)
-     {
-         _formInputs.DeleteOne(formInput => formInput.Id == id);
-     }
+     // public void RemoveByMongoId(string id)
+     // {
+     //     _formInputs.DeleteOne(formInput => formInput.Id == id);
+     // }
         
-     public void UpdateIdFormInput(string id, FormInput formInput)
-     {
-         _formInputs.ReplaceOne(form => form.Id == id, formInput);
-     }
+     // public void UpdateIdFormInput(string id, FormInput formInput)
+     // {
+     //     _formInputs.ReplaceOne(form => form.Id == id, formInput);
+     // }
      
      // Ticket Input
      public TicketInput CreateTicketInput(TicketInput ticketInput)
@@ -112,10 +112,10 @@ public class FlexformServices : IFlexformService
          return ticketInput;
      }
 
-     public List<TicketInput> GetAllTicketInput()
-     {
-         return _ticketInputs.Find(ticketInput => true).ToList();
-     }
+     // public List<TicketInput> GetAllTicketInput()
+     // {
+     //     return _ticketInputs.Find(ticketInput => true).ToList();
+     // }
      
      public List<TicketInput> GetByIdTicketInput(string id)
      {
@@ -127,18 +127,18 @@ public class FlexformServices : IFlexformService
          return _ticketInputs.Find(ticketInput => ticketInput.TicketId == id).ToList();
      }
      
-     public TicketInput GetByMongoIdTicketInput(string id)
-     {
-         return _ticketInputs.Find(ticketInput => ticketInput.Id == id).FirstOrDefault();
-     }
+     // public TicketInput GetByMongoIdTicketInput(string id)
+     // {
+     //     return _ticketInputs.Find(ticketInput => ticketInput.Id == id).FirstOrDefault();
+     // }
 
-     public void RemoveTicketByMongoId(string id)
-     {
-         _ticketInputs.DeleteOne(ticketInput => ticketInput.Id == id);
-     }
+     // public void RemoveTicketByMongoId(string id)
+     // {
+     //     _ticketInputs.DeleteOne(ticketInput => ticketInput.Id == id);
+     // }
         
-     public void UpdateIdTicketInput(string id, TicketInput ticketInput)
-     {
-         _ticketInputs.ReplaceOne(form => form.Id == id, ticketInput);
-     }
+     // public void UpdateIdTicketInput(string id, TicketInput ticketInput)
+     // {
+     //     _ticketInputs.ReplaceOne(form => form.Id == id, ticketInput);
+     // }
 }
