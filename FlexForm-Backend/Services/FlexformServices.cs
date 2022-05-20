@@ -21,7 +21,7 @@ public interface IFlexformService
     // void RemoveByMongoId(string id);
     // void UpdateIdFormInput(string id, FormInput form);
     
-    // List<TicketInput> GetAllTicketInput();
+    List<TicketInput> GetAllTicketInput();
     List<TicketInput> GetByIdTicketInput(string id);
     List<TicketInput> GetByTicketIdTicketInput(string id);
     // TicketInput GetByMongoIdTicketInput(string id);
@@ -112,10 +112,10 @@ public class FlexformServices : IFlexformService
          return ticketInput;
      }
 
-     // public List<TicketInput> GetAllTicketInput()
-     // {
-     //     return _ticketInputs.Find(ticketInput => true).ToList();
-     // }
+     public List<TicketInput> GetAllTicketInput()
+     {
+         return _ticketInputs.Find(ticketInput => true).ToList();
+     }
      
      public List<TicketInput> GetByIdTicketInput(string id)
      {
