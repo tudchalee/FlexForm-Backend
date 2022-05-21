@@ -27,9 +27,7 @@ public class RegisterRequest
     public string division_id { get; set; }
     [Required]
     public string role_id { get; set; }
-    [Required]
     public bool activated { get; set; }
-    [Required]
     public string profile_pic { get; set; }
 
 }

@@ -15,10 +15,10 @@ public interface IFlexformService
     
     // List<FormInput> GetAllFormInput();
     List<FormInput> GetByIdFormInput(string id);
-    // FormInput GetByMongoIdFormInput(string id);
+    FormInput GetByMongoIdFormInput(string id);
     FormInput CreateFormInput(FormInput form);
     void RemoveAllByFormId(string id);
-    // void RemoveByMongoId(string id);
+    void RemoveByMongoId(string id);
     // void UpdateIdFormInput(string id, FormInput form);
     
     List<TicketInput> GetAllTicketInput();
@@ -85,20 +85,20 @@ public class FlexformServices : IFlexformService
          return _formInputs.Find(formInput => formInput.FormId == id).ToList();
      }
         
-     // public FormInput GetByMongoIdFormInput(string id)
-     // {
-     //     return _formInputs.Find(formInput => formInput.Id == id).FirstOrDefault();
-     // }
+     public FormInput GetByMongoIdFormInput(string id)
+     {
+         return _formInputs.Find(formInput => formInput.Id == id).FirstOrDefault();
+     }
       
      public void RemoveAllByFormId(string id)
      {
          _formInputs.DeleteMany(formInput => formInput.FormId == id);
      }
      
-     // public void RemoveByMongoId(string id)
-     // {
-     //     _formInputs.DeleteOne(formInput => formInput.Id == id);
-     // }
+     public void RemoveByMongoId(string id)
+     {
+         _formInputs.DeleteOne(formInput => formInput.Id == id);
+     }
         
      // public void UpdateIdFormInput(string id, FormInput formInput)
      // {

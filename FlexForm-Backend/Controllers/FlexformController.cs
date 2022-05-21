@@ -76,7 +76,7 @@ public class FlexformController : ControllerBase
         }
 
         flexformService.Remove(form.FormId);
-        if (forminput[0] != null)
+        if (forminput.Count != 0)
         {
             flexformService.RemoveAllByFormId(forminput[0].FormId);
         }
@@ -106,7 +106,7 @@ public class FlexformController : ControllerBase
         return form;
     }
 
-    // // GET api/FormInput/Mongo/{id}
+    // GET api/FormInput/Mongo/{id}
     // [HttpGet("FormInput/Mongo/{id}")]
     // public ActionResult<FormInput> GetByMongoIdFormInput(string id)
     // {
@@ -128,21 +128,21 @@ public class FlexformController : ControllerBase
         return savedForm;
     }
 
-    // //DELETE api/FormInput/Delete/Mongo/{id}
-    // [HttpDelete("FormInput/Delete/Mongo/{id}")]
-    // public ActionResult DeleteMongo(string id)
-    // {
-    //     var form = flexformService.GetByMongoIdFormInput(id);
-    //
-    //     if (form == null)
-    //     {
-    //         return NotFound($"Form with Id = {id} not found");
-    //     }
-    //
-    //     flexformService.RemoveByMongoId(form.Id);
-    //
-    //     return Ok($"Form with Id = {id} deleted");
-    // }
+    //DELETE api/FormInput/Delete/Mongo/{id}
+    [HttpDelete("FormInput/Delete/Mongo/{id}")]
+    public ActionResult DeleteMongo(string id)
+    {
+        var form = flexformService.GetByMongoIdFormInput(id);
+    
+        if (form == null)
+        {
+            return NotFound($"Form with Id = {id} not found");
+        }
+    
+        flexformService.RemoveByMongoId(form.Id);
+    
+        return Ok($"Form with Id = {id} deleted");
+    }
 
     // // PUT api/FormInput/{id}
     // [HttpPut("FormInput/{id}")]
